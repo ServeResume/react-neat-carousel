@@ -1,10 +1,10 @@
 {
-  "name": "react-modern-library-boilerplate",
+  "name": "react-neat-carousel",
   "version": "1.4.1",
-  "description": "Boilerplate for publishing modern React modules with Rollup",
-  "author": "Travis Fischer",
+  "description": "A neat React carousel",
+  "author": "Yasser Hennawi",
   "license": "MIT",
-  "repository": "transitive-bullshit/react-modern-library-boilerplate",
+  "repository": "ServeResume/react-neat-carousel",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "engines": {
@@ -38,7 +38,7 @@
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.0",
-    "eslint-plugin-react": "^7.10.0",
+    "eslint-plugin-react": "^7.12.3",
     "eslint-plugin-standard": "^3.1.0",
     "gh-pages": "^1.2.0",
     "react": "^16.4.1",
@@ -54,5 +54,9 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "dependencies": {
+    "react-spring": "^7.2.8",
+    "styled-components": "^4.1.3"
+  }
 }

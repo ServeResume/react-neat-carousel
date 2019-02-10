@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import ExampleComponent from 'react-modern-library-boilerplate'
+import ExampleComponent from 'react-neat-carousel'
 
 export default class App extends Component {
   render () {
