@@ -1,106 +1,120 @@
-import React, { Component } from 'react'
-import { Spring, config } from 'react-spring'
-import { Wrapper, Slide, Page, ButtonWrapper, Button } from './partials'
-import data, {
+import React, { Component } from "react";
+import { Spring, config } from "react-spring";
+import { Wrapper, Slide, Page, ButtonWrapper, Button } from "./partials";
+import {
   getInitialArray,
-  mutableRotateLeft,
-  mutableRotateRight,
-  getProperNumber
-} from './data'
+  getProperNumber,
+  getProperElements,
+  moveData
+} from "./helpers";
 
-export default class ExampleComponent extends Component {
+class NeatCarousel extends Component {
   state = {
     activeIndex: 0,
     currentPosition: -115,
     positionToBe: -115,
     isMoving: false,
-    data: getInitialArray(data),
+    data: getInitialArray(this.props.data),
     isInitial: true,
     didDataJustShift: false
-  }
+  };
 
-  componentDidUpdate (_, prevState) {
+  static defaultProps = {
+    imageRatio: 9 / 16
+  };
+  componentDidUpdate(_, prevState) {
     if (!this.state.isMoving && prevState.isMoving) {
-      const newData = [...this.state.data]
+      const newData = [...this.state.data];
       this.setState({
-        data: this.state.isInNextDirecion
-          ? mutableRotateLeft(newData)
-          : mutableRotateRight(newData),
+        data: moveData(this.state.isInNextDirecion, newData),
         positionToBe: -115,
         currentPosition: -115
-      })
+      });
     }
   }
 
   onPrevClick = () => {
-    const { isMoving, activeIndex, currentPosition } = this.state
+    const {
+      props: { data },
+      state: { isMoving, activeIndex, currentPosition }
+    } = this;
     if (!isMoving) {
       this.setState({
         activeIndex: getProperNumber(activeIndex - 1, data.length),
         positionToBe: currentPosition + 65,
         isInNextDirecion: false,
         isMoving: true
-      })
+      });
     }
-  }
+  };
   onNextClick = () => {
-    const { isMoving, activeIndex, currentPosition } = this.state
+    const {
+      props: { data },
+      state: { isMoving, activeIndex, currentPosition }
+    } = this;
     if (!isMoving) {
       this.setState({
         activeIndex: getProperNumber(activeIndex + 1, data.length),
         positionToBe: currentPosition - 65,
         isMoving: true,
         isInNextDirecion: true
-      })
+      });
     }
-  }
+  };
   onRest = () => {
     this.setState({
       isMoving: false,
       currentPosition: this.state.positionToBe
-    })
-  }
+    });
+  };
 
-  render () {
+  render() {
     const {
       onNextClick,
       onPrevClick,
       onRest,
-      state: { activeIndex, currentPosition, positionToBe, isMoving }
-    } = this
+      state: { activeIndex, currentPosition, positionToBe, isMoving },
+      props: { data, imageRatio }
+    } = this;
     return (
-      console.log('activeIndex: ', activeIndex) || (
-        <Page>
-          <ButtonWrapper>
-            <Button onClick={onPrevClick}>Prev</Button>
-            <Button onClick={onNextClick}>Next</Button>
-          </ButtonWrapper>
-          <div>
-            <Spring
-              from={{ position: currentPosition }}
-              to={{ position: Math.ceil(positionToBe) }}
-              onRest={onRest}
-              config={config.default}
-              immediate={!isMoving}
-            >
-              {({ position }) => (
-                <Wrapper>
-                  {this.state.data.map(({ index, imageURL }) => (
+      <Page>
+        <ButtonWrapper>
+          <Button onClick={onPrevClick}>Prev</Button>
+          <Button onClick={onNextClick}>Next</Button>
+        </ButtonWrapper>
+        <div>
+          <Spring
+            from={{ position: currentPosition }}
+            to={{ position: Math.ceil(positionToBe) }}
+            onRest={onRest}
+            config={config.default}
+            immediate={!isMoving}
+          >
+            {({ position }) => (
+              <Wrapper>
+                {getProperElements(this.state.data, activeIndex).map(
+                  elementProps => (
                     <Slide
                       key={Math.random()}
                       position={position}
-                      isActive={activeIndex === index && !isMoving}
-                      imageURL={imageURL}
+                      isActive={
+                        getProperNumber(activeIndex, data.length) ===
+                          elementProps.index && !isMoving
+                      }
+                      imageRatio={imageRatio}
+                      {...elementProps}
                     >
-                      {index}
+                      {elementProps.index}
                     </Slide>
-                  ))}
-                </Wrapper>
-              )}
-            </Spring>
-          </div>
-        </Page>
-      )
-    )
+                  )
+                )}
+              </Wrapper>
+            )}
+          </Spring>
+        </div>
+      </Page>
+    );
   }
 }
+
+export default NeatCarousel;
